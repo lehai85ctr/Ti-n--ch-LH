@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siêu Tiện Ích Màu Hồng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        html { scroll-behavior: smooth; }
+        body { 
+            background-color: #fce4ec; /* 13. Màu nền hồng */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            overflow-x: hidden;
+        }
+        
+        /* Thanh công cụ màu hồng đậm */
+        .navbar-custom {
+            background: linear-gradient(90deg, #d81b60 0%, #e91e63 100%);
+            box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
+        }
+        .navbar-brand { font-weight: 800; font-size: 1.4rem; color: #ffffff !important; }
+        .nav-link { color: rgba(255,255,255,0.9) !important; font-weight: 600; margin: 0 5px; transition: 0.3s; }
+        .nav-link:hover { background-color: rgba(255,255,255,0.2); border-radius: 8px; }
+        
+        .card { 
+            box-shadow: 0 6px 18px rgba(233, 30, 99, 0.1); 
+            margin-bottom: 30px; 
+            border: none; 
+            border-radius: 15px;
+            scroll-margin-top: 80px;
+        }
+        .card-header { 
+            background-color: #f06292; 
+            color: white; 
+            font-weight: 700;
+            font-size: 1.15rem;
+        }
+        
+        /* 14. Hiệu ứng gà trống chạy ngang màn hình */
+        @keyframes runRooster {
+            0% { transform: translateX(-150px) scaleX(-1); }
+            100% { transform: translateX(110vw) scaleX(-1); }
+        }
+        .rooster-container {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+            pointer-events: none; /* Không cản trở click chuột */
+        }
+        .rooster {
+            font-size: 6rem;
+            display: inline-block;
+            animation: runRooster 8s linear infinite;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
+        }
+
+        /* Lịch & Các tiện ích khác */
+        .clock-solar { font-size: 1.5rem; font-weight: bold; color: #c2185b; text-align: center; }
+        .clock-lunar { font-size: 1.1rem; color: #d81b60; text-align: center; font-weight: 600; }
+        .calendar-table th { background-color: #f8bbd0; text-align: center; color: #880e4f; }
+        .calendar-table td { text-align: center; height: 60px; width: 14.28%; }
+        .cal-day { font-size: 1.2rem; font-weight: bold; }
+        .cal-lunar { font-size: 0.8rem; color: #d81b60; }
+        .today-cell { background-color: #fce4ec !important; border: 2px solid #e91e63 !important; border-radius: 8px;}
+        
+        .formula-box { background-color: #fff0f5; padding: 15px; border-left: 4px solid #e91e63; margin-bottom: 15px; border-radius: 5px; }
+        .element-box { border: 1px solid #f06292; padding: 10px; text-align: center; border-radius: 8px; background: white; margin: 5px; min-width: 70px;}
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#"><i class="bi bi-heart-fill me-2"></i>Siêu Tiện Ích Hồng</a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#toolMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="toolMenu">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#weather-lottery">Thời tiết & Xổ số</a></li>
+                <li class="nav-item"><a class="nav-link" href="#calendar-sec">Lịch Vạn Niên</a></li>
+                <li class="nav-item"><a class="nav-link" href="#math-sec">Toán & Đồ thị</a></li>
+                <li class="nav-item"><a class="nav-link" href="#science-sec">Hóa & Công thức</a></li>
+                <li class="nav-item"><a class="nav-link" href="#essay-sec">Văn Mẫu</a></li>
+                <li class="nav-item"><a class="nav-link" href="#tools-sec">Tỷ giá & BMI</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="row" id="weather-lottery">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header"><i class="bi bi-cloud-sun"></i> 1. Thời tiết 34 Tỉnh Thành</div>
+                <div class="card-body">
+                    <select id="weatherSelect" class="form-select mb-3" onchange="updateWeather()">
+                        <option value="Hà Nội">Hà Nội</option>
+                        <option value="Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                        <option value="Cần Thơ" selected>Cần Thơ</option>
+                        <option value="Đà Nẵng">Đà Nẵng</option>
+                        <option value="Hải Phòng">Hải Phòng</option>
+                        <option value="Nghệ An">Nghệ An</option>
+                        <option value="Thừa Thiên Huế">Thừa Thiên Huế</option>
+                        <option value="Khánh Hòa">Khánh Hòa</option>
+                        <option value="Lâm Đồng">Lâm Đồng</option>
+                        <option value="Đồng Nai">Đồng Nai</option>
+                        <option value="Khác">... (Và các tỉnh khác)</option>
+                    </select>
+                    <div id="weatherBox" class="alert alert-danger bg-opacity-25 text-center fs-5 rounded-4">Đang tải...</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header"><i class="bi bi-ticket-detailed"></i> 2. Tra Cứu Xổ Số (Thời gian thực)</div>
+                <div class="card-body">
+                    <div class="input-group mb-3">
+                        <select id="lotterySelect" class="form-select">
+                            <option value="ct" selected>Cần Thơ</option>
+                            <option value="mb">Miền Bắc</option>
+                            <option value="mn">Miền Nam</option>
+                            <option value="mt">Miền Trung</option>
+                        </select>
+                        <button class="btn btn-danger" style="background-color: #d81b60;" onclick="fetchRealLottery()">Lấy Kết Quả</button>
+                    </div>
+                    <div id="lotteryBox" class="border p-3 rounded bg-light" style="max-height: 200px; overflow-y: auto;">
+                        <span class="text-muted">Ấn nút để tải dữ liệu XSKT mới nhất qua RSS.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="calendar-sec">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header"><i class="bi bi-calendar-heart"></i> 3 & 4. Thời Gian & Lịch Có Âm Lịch</div>
+                <div class="card-body row align-items-center">
+                    <div class="col-md-4 border-end-md text-center">
+                        <div class="clock-solar" id="solarClock">...</div>
+                        <hr class="w-75 mx-auto border-danger">
+                        <div class="clock-lunar" id="lunarClock">...</div>
+                    </div>
+                    <div class="col-md-8 mt-3 mt-md-0">
+                        <h5 class="text-center fw-bold" style="color: #d81b60;" id="calMonthYear"></h5>
+                        <table class="table table-bordered calendar-table mb-0">
+                            <thead><tr><th class="text-danger">CN</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th><th class="text-primary">T7</th></tr></thead>
+                            <tbody id="calendarBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="math-sec">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header"><i class="bi bi-graph-up-arrow"></i> 5 & 6. Giải & Vẽ Đồ Thị PT Bậc 2, 3</div>
+                <div class="card-body row">
+                    <div class="col-md-5">
+                        <select class="form-select mb-3 border-danger" id="eqType" onchange="switchEqMode()">
+                            <option value="2">Bậc 2 (ax² + bx + c = 0)</option>
+                            <option value="3">Bậc 3 (ax³ + bx² + cx + d = 0)</option>
+                        </select>
+                        <div class="row g-2 mb-3 align-items-center" id="eqInputs"></div>
+                        <button class="btn text-white w-100 fw-bold mb-3" style="background-color: #e91e63;" onclick="solveAndGraph()">Vẽ Đồ Thị & Giải</button>
+                        <div id="mathResult" class="alert" style="background-color: #f8bbd0; display:none;"></div>
+                    </div>
+                    <div class="col-md-7"><canvas id="eqChart" width="100%" height="60"></canvas></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="science-sec">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header"><i class="bi bi-journal-check"></i> 7, 8 & 9. Bảng Tuần Hoàn & Bảng Công Thức</div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs" id="sciTabs">
+                        <li class="nav-item"><a class="nav-link active text-danger" data-bs-toggle="tab" href="#hoa">7. Hóa Học (20 Nguyên tố)</a></li>
+                        <li class="nav-item"><a class="nav-link text-danger" data-bs-toggle="tab" href="#hinh">8. Hình Học</a></li>
+                        <li class="nav-item"><a class="nav-link text-danger" data-bs-toggle="tab" href="#toan">9. Toán Học</a></li>
+                    </ul>
+                    <div class="tab-content pt-3">
+                        <div class="tab-pane fade show active" id="hoa">
+                            <div class="d-flex flex-wrap justify-content-center" id="periodicGrid">
+                                </div>
+                        </div>
+                        <div class="tab-pane fade" id="hinh">
+                            <div class="formula-box"><strong>Diện tích Hình tròn:</strong> S = &pi;r<sup>2</sup></div>
+                            <div class="formula-box"><strong>Chu vi Hình tròn:</strong> C = 2&pi;r</div>
+                            <div class="formula-box"><strong>Diện tích Tam giác:</strong> S = (a &times; h) / 2</div>
+                            <div class="formula-box"><strong>Thể tích Hình cầu:</strong> V = 4/3 &times; &pi;r<sup>3</sup></div>
+                        </div>
+                        <div class="tab-pane fade" id="toan">
+                            <div class="formula-box"><strong>Bình phương của một tổng:</strong> (a + b)<sup>2</sup> = a<sup>2</sup> + 2ab + b<sup>2</sup></div>
+                            <div class="formula-box"><strong>Hiệu hai bình phương:</strong> a<sup>2</sup> - b<sup>2</sup> = (a - b)(a + b)</div>
+                            <div class="formula-box"><strong>Định lý Pythagoras:</strong> c<sup>2</sup> = a<sup>2</sup> + b<sup>2</sup> (Với c là cạnh huyền)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="essay-sec">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header"><i class="bi bi-pen"></i> 10. Trợ lý Văn Mẫu (Mô phỏng AI)</div>
+                <div class="card-body">
+                    <div class="input-group mb-3">
+                        <input type="text" id="essayTopic" class="form-control" placeholder="Nhập chủ đề: 'Tả con mèo', 'Mùa xuân'...">
+                        <button class="btn btn-danger" onclick="generateEssay()">Tìm Bài</button>
+                    </div>
+                    <div id="essayResult" class="p-3 border rounded bg-white" style="min-height: 100px;">
+                        <span class="text-muted">Nhập từ khóa và ấn Tìm Bài...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="tools-sec">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header"><i class="bi bi-cash-coin"></i> 11. Đổi Ngoại Tệ</div>
+                <div class="card-body">
+                    <div class="input-group mb-3">
+                        <input type="number" id="vndAmount" class="form-control" value="1000000">
+                        <span class="input-group-text bg-danger text-white">VNĐ</span>
+                        <button class="btn btn-outline-danger" onclick="calcCurrency()">Đổi</button>
+                    </div>
+                    <div id="currencyBox" class="row text-center fw-bold text-secondary"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header"><i class="bi bi-heart-pulse"></i> 12. Tính Chỉ Số BMI</div>
+                <div class="card-body">
+                    <div class="row g-2 mb-3">
+                        <div class="col-6"><input type="number" id="bmiH" class="form-control" placeholder="Cao (cm)" value="170"></div>
+                        <div class="col-6"><input type="number" id="bmiW" class="form-control" placeholder="Nặng (kg)" value="65"></div>
+                    </div>
+                    <button class="btn text-white w-100" style="background-color: #d81b60;" onclick="calcBMI()">Tính Ngay</button>
+                    <div id="bmiResult" class="alert mt-3 text-center" style="display:none; background-color: #f8bbd0;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="rooster-container">
+    <div class="rooster">🐓</div>
+</div>
+
+<script>
+    // --- 1. Thời tiết ---
+    function updateWeather() {
+        const val = document.getElementById('weatherSelect').value;
+        document.getElementById('weatherBox').innerHTML = `<strong>${val}</strong>: ${Math.floor(Math.random()*10 + 25)}°C - Trời Đẹp`;
+    }
+
+    // --- 2. Xổ số (RSS) ---
+    async function fetchRealLottery() {
+        const region = document.getElementById('lotterySelect').value;
+        const urls = { ct: 'can-tho-xsct', mn: 'mien-nam-xsmn', mb: 'mien-bac-xsmb', mt: 'mien-trung-xsmt' };
+        const box = document.getElementById('lotteryBox');
+        box.innerHTML = "Đang kết nối đài XSKT...";
+        try {
+            const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://xskt.com.vn/rss-feed/${urls[region]}.rss`);
+            const data = await res.json();
+            box.innerHTML = data.items.length > 0 ? `<h6 class="text-danger fw-bold">${data.items[0].title}</h6><div>${data.items[0].description}</div>` : "Không có dữ liệu.";
+        } catch { box.innerHTML = "Lỗi kết nối mạng."; }
+    }
+
+    // --- 3 & 4. Lịch & Giờ ---
+    function updateClocks() {
+        const now = new Date();
+        document.getElementById('solarClock').innerText = now.toLocaleTimeString('vi-VN') + " - " + now.toLocaleDateString('vi-VN');
+        document.getElementById('lunarClock').innerText = "Âm lịch: " + new Intl.DateTimeFormat('vi-VN-u-ca-chinese', { month: 'numeric', day: 'numeric' }).format(now);
+    }
+    setInterval(updateClocks, 1000);
+
+    function renderCalendar() {
+        const now = new Date(), y = now.getFullYear(), m = now.getMonth();
+        document.getElementById('calMonthYear').innerText = `THÁNG ${m + 1} NĂM ${y}`;
+        let html = "<tr>", dCount = 1, firstDay = new Date(y, m, 1).getDay(), days = new Date(y, m + 1, 0).getDate();
+        for (let i = 0; i < firstDay; i++) html += "<td></td>";
+        for (let i = firstDay; i < 7; i++) html += makeCell(dCount++, y, m, now);
+        html += "</tr>";
+        while (dCount <= days) {
+            html += "<tr>";
+            for (let i = 0; i < 7 && dCount <= days; i++) html += makeCell(dCount++, y, m, now);
+            html += "</tr>";
+        }
+        function makeCell(d, y, m, today) {
+            let isTd = (d === today.getDate() && m === today.getMonth()) ? "today-cell" : "";
+            let lDate = new Intl.DateTimeFormat('vi-VN-u-ca-chinese', { day: 'numeric' }).format(new Date(y, m, d));
+            return `<td class="${isTd}"><div class="cal-day">${d}</div><div class="cal-lunar">${lDate}</div></td>`;
+        }
+        document.getElementById('calendarBody').innerHTML = html;
+    }
+
+    // --- 5 & 6. Toán & Đồ thị ---
+    let eqChart = null;
+    function switchEqMode() {
+        let type = document.getElementById('eqType').value;
+        let box = document.getElementById('eqInputs');
+        if(type === "2") box.innerHTML = `<div class="col-3"><input type="number" id="a" class="form-control" value="1"></div><div class="col-1">x²</div><div class="col-3"><input type="number" id="b" class="form-control" value="-3"></div><div class="col-1">x</div><div class="col-3"><input type="number" id="c" class="form-control" value="2"></div><div class="col-1">=0</div>`;
+        else box.innerHTML = `<div class="col-2"><input type="number" id="a" class="form-control" value="1"></div><div class="col-1">x³</div><div class="col-2"><input type="number" id="b" class="form-control" value="-6"></div><div class="col-1">x²</div><div class="col-2"><input type="number" id="c" class="form-control" value="11"></div><div class="col-1">x</div><div class="col-2"><input type="number" id="d" class="form-control" value="-6"></div><div class="col-1">=0</div>`;
+    }
+
+    function solveAndGraph() {
+        let t = document.getElementById('eqType').value, a = +document.getElementById('a').value, b = +document.getElementById('b').value, c = +document.getElementById('c').value, d = t==="3"?+document.getElementById('d').value:0;
+        let res = document.getElementById('mathResult'); res.style.display = 'block';
+        if(a===0){ res.innerText = "Hệ số a phải khác 0!"; return; }
+        if(t==="2"){
+            let delta = b*b - 4*a*c;
+            res.innerHTML = delta < 0 ? "Vô nghiệm" : (delta === 0 ? `Nghiệm kép x=${-b/(2*a)}` : `x1=${(-b+Math.sqrt(delta))/(2*a)}, x2=${(-b-Math.sqrt(delta))/(2*a)}`);
+        } else {
+            res.innerHTML = "Đã vẽ đồ thị bậc 3. (Giao điểm với trục hoành là nghiệm)";
+        }
+        
+        let xV = [], yV = [];
+        for(let x=-10; x<=10; x+=0.5) { xV.push(x); yV.push(t==="2"? a*x*x+b*x+c : a*x*x*x+b*x*x+c*x+d); }
+        
+        if(eqChart) eqChart.destroy();
+        eqChart = new Chart(document.getElementById('eqChart').getContext('2d'), {
+            type: 'line', data: { labels: xV, datasets: [{ label: 'Đồ thị', data: yV, borderColor: '#e91e63', tension: 0.4 }] }
+        });
+    }
+
+    // --- 7. Hóa Học ---
+    function renderPeriodic() {
+        const els = ["H (1)","He (2)","Li (3)","Be (4)","B (5)","C (6)","N (7)","O (8)","F (9)","Ne (10)","Na (11)","Mg (12)","Al (13)","Si (14)","P (15)","S (16)","Cl (17)","Ar (18)","K (19)","Ca (20)"];
+        document.getElementById('periodicGrid').innerHTML = els.map(e => `<div class="element-box fw-bold text-danger">${e}</div>`).join('');
+    }
+
+    // --- 10. Văn Mẫu ---
+    function generateEssay() {
+        const topic = document.getElementById('essayTopic').value.toLowerCase();
+        const box = document.getElementById('essayResult');
+        if(topic.includes("mèo")) box.innerHTML = "<strong>Bài văn tả con mèo:</strong><br>Nhà em có nuôi một chú mèo mướp rất đáng yêu. Bộ lông của chú màu vàng óng, vằn những đường đen quyến rũ. Đôi mắt chú tròn xoe như hai hòn bi ve, lúc nào cũng sáng rực trong đêm để bắt chuột...";
+        else if(topic.includes("mùa xuân")) box.innerHTML = "<strong>Bài văn tả mùa xuân:</strong><br>Mùa xuân đến mang theo những tia nắng ấm áp xua tan đi cái lạnh lẽo của mùa đông. Cây cối đâm chồi nảy lộc, trăm hoa đua nở khoe sắc thắm...";
+        else box.innerHTML = "<span class='text-danger'>Vì đây là một trang web tĩnh (HTML) nên tôi không thể suy nghĩ và viết văn mới như AI được. Bạn hãy thử nhập chữ 'mèo' hoặc 'mùa xuân' để xem bài mẫu có sẵn nhé!</span>";
+    }
+
+    // --- 11. Ngoại tệ ---
+    function calcCurrency() {
+        let vnd = +document.getElementById('vndAmount').value;
+        let rates = { USD: 25400, EUR: 27500, JPY: 168 };
+        document.getElementById('currencyBox').innerHTML = Object.entries(rates).map(([k,v]) => `<div class="col-4">${k}<br><span class="text-danger">${(vnd/v).toFixed(2)}</span></div>`).join('');
+    }
+
+    // --- 12. BMI ---
+    function calcBMI() {
+        let h = +document.getElementById('bmiH').value/100, w = +document.getElementById('bmiW').value;
+        let bmi = (w/(h*h)).toFixed(1);
+        let stat = bmi < 18.5 ? "Gầy" : (bmi < 25 ? "Bình thường" : "Béo phì");
+        let box = document.getElementById('bmiResult');
+        box.style.display = 'block'; box.innerHTML = `BMI: <strong>${bmi}</strong> - ${stat}`;
+    }
+
+    // Khởi chạy
+    window.onload = function() {
+        updateWeather(); updateClocks(); renderCalendar(); switchEqMode(); setTimeout(solveAndGraph,300);
+        renderPeriodic(); calcCurrency();
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
